@@ -4,16 +4,14 @@ dotenv.config();
 import cors from "cors";
 import logger from "morgan";
 import cookieParser from "cookie-parser";
-import passport from "passport";
+import api from "./routes/apiv1";
 // import path from "path";
 // import { fileURLToPath } from "url";
 // import { dirname } from "path";
 // const __filename = fileURLToPath(import.meta.url);
 // const __dirname = dirname(__filename);
-import "./auth/jwt";
 const app = express();
 
-app.use(passport.initialize());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -26,6 +24,8 @@ app.use(
   })
 );
 
+
+app.use("/api/v1/", api)
 app.get("/", async (_req, res) => {
   return res.status(200).json({ message: "Hello World!" });
 });

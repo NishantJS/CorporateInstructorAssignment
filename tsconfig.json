@@ -1,15 +1,16 @@
 {
   "compilerOptions": {
-    "outDir": "dist/",
+    "outDir": "dist",
     "target": "esnext",
-    "module": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "removeComments": true
+    "removeComments": true,
+    "useUnknownInCatchVariables": false
   },
-  "exclude": ["node_modules/"],
-  "include": ["routes", "app.ts"]
+  "exclude": ["node_modules", "dist"],
+  "include": ["routes", "app.ts", "auth", "custom"]
 }
