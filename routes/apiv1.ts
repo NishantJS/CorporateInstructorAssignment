@@ -3,11 +3,13 @@ import storage from './createStorage';
 import { UserType } from "../custom/definations"
 import passport from 'passport';
 import "../auth/jwt";
+import upload from "./uploadFile";
+import download from "./downloadFile";
 
 const api = Router();
 
+api.use("/public", download)
 api.use(passport.initialize());
-
 api.use("/create_new_storage", storage)
 api.use(
   ["/upload_file", "/my_upload_file"],
@@ -27,5 +29,7 @@ api.use(
     }
   }
 );
+
+api.use("/upload_file", upload);
 
 export default api;

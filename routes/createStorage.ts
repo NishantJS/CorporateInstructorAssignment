@@ -1,14 +1,15 @@
 import { Router } from "express";
 import jwt from "jsonwebtoken"
-import { randomUUID } from "crypto"
+import { randomBytes } from "crypto"
+import { UserType } from "../custom/definations";
 
 const storage = Router();
 
-storage.get("/", async (req, res) => {
+storage.post("/", async (req: UserType, res) => {
   const { token } = req.signedCookies;
-  const user = req?.user;
+  const user = req?.user?.user;
 
-  if (token || user) {
+  if (token && user) {
     return res.status(200).json({
       "status": "ok",
       "message": "Token already exists!"
@@ -16,7 +17,7 @@ storage.get("/", async (req, res) => {
   }
 
   const payload = {
-    user: randomUUID()
+    user: randomBytes(8).toString("base64url")
   }
 
   const newToken = jwt.sign(payload, process.env.JWT_SECRET!, {
