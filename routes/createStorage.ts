@@ -70,4 +70,4 @@ storage.delete("/", async (_req, res) => {
   }
 })
 
-export default storage; 
+export default storage;
