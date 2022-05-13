@@ -3,6 +3,7 @@ import { readFile, writeFile } from "fs/promises";
 import { extname } from "path";
 import text2wav from "text2wav"
 import { UserType } from "../custom/definations";
+import { checkPath } from "./checkPath";
 
 const text2Speech = Router();
 
@@ -11,16 +12,11 @@ text2Speech.post("/", async (req: UserType, res) => {
     const options = { voice: "en+f2", speed: 80, wordGap: 1000, pitch: 100 }
 
     const { file_path } = req.body;
-    if (!file_path) throw new Error("Please provide file path!")
+    const user = req.user?.user;
 
-    const rootPath = `public/${req.user?.user}/`
-    const filepath = file_path.split("/");
-
-    if (filepath.length !== 3 || filepath[0] !== "public") throw new Error("Invalide path!")
-    if (filepath[1] !== req.user?.user) throw new Error("You don't have permission to access other's files!");
-    const [filename, fileext] = filepath[2].split(".")
-
-    if (fileext !== "txt") throw new Error("Only text files can be converted to speech!");
+    const { error, path, message } = checkPath(file_path, user, true);
+    if (error) throw new Error(message);
+    const { rootPath, filename, filepath } = path!;
 
     const data = await readFile(rootPath + filepath[2], 'utf8');
 

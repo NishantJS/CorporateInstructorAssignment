@@ -6,6 +6,7 @@ import "../auth/jwt";
 import upload from "./uploadFile";
 import download from "./downloadFile";
 import text2Speech from "./text2Speech";
+import createVideo from "./createVideo";
 
 const api = Router();
 
@@ -14,7 +15,7 @@ api.use(passport.initialize());
 
 api.use("/create_new_storage", storage)
 api.use(
-  ["/upload_file", "/my_upload_file", "/text_file_to_audio"],
+  ["/upload_file", "/my_upload_file", "/text_file_to_audio", "/merge_image_and_audio"],
   passport.authenticate("jwt", { session: false }),
   async (req: UserType, res, next) => {
     try {
@@ -34,6 +35,7 @@ api.use(
 
 api.use("/upload_file", upload);
 api.use("/text_file_to_audio", text2Speech);
+api.use("/merge_image_and_audio", createVideo);
 
 
 export default api;
