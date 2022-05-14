@@ -35,11 +35,11 @@ createVideo.post("/", async (req: UserType, res) => {
 
     const name = image + audio;
     const hash = createHash('md5').update(name).digest('hex');
-    const video = join("public", user, `${hash}.mkv`)
+    const video = join("public", user, `${hash}.mp4`)
     const isSaved = await doesExists(video);
 
     if (!isSaved) {
-      const command = `ffmpeg -loop 1 -f image2 -r 2 -i ${image} -i ${audio} -c:v libx264 -c:a copy -shortest ${video}`
+      const command = `ffmpeg -loop 1 -i ${image} -i ${audio} -c:v libx264 -tune stillimage -c:a aac -b:a 192k -pix_fmt yuv420p -shortest ${video}`
       await exec(command);
     }
 
