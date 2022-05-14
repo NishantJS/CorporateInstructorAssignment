@@ -8,6 +8,7 @@ import download from "./downloadFile";
 import text2Speech from "./text2Speech";
 import createVideo from "./createVideo";
 import replaceAudio from "./replaceAudio";
+import mergeVideo from "./mergeVideo";
 
 const api = Router();
 
@@ -16,7 +17,7 @@ api.use(passport.initialize());
 
 api.use("/create_new_storage", storage)
 api.use(
-  ["/upload_file", "/my_upload_file", "/text_file_to_audio", "/merge_image_and_audio", "/merge_video_and_audio"],
+  ["/upload_file", "/my_upload_file", "/text_file_to_audio", "/merge_image_and_audio", "/merge_video_and_audio", "/merge_all_video"],
   passport.authenticate("jwt", { session: false }),
   async (req: UserType, res, next) => {
     try {
@@ -38,6 +39,7 @@ api.use("/upload_file", upload);
 api.use("/text_file_to_audio", text2Speech);
 api.use("/merge_image_and_audio", createVideo);
 api.use("/merge_video_and_audio", replaceAudio);
+api.use("/merge_all_video", mergeVideo);
 
 
 export default api;

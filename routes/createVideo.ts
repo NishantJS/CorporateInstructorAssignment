@@ -4,7 +4,7 @@ import util from "util"
 import { exec as execSync } from "child_process";
 import { checkPath } from "./checkPath";
 import { createHash } from "crypto"
-import { promises as Fs } from "fs"
+import { access } from "fs/promises"
 import { join } from "path"
 import { pathToFileURL } from "url"
 const exec = util.promisify(execSync);
@@ -13,7 +13,7 @@ const createVideo = Router();
 
 const doesExists = async (path: string) => {
   try {
-    await Fs.access(path)
+    await access(path)
     return true
   } catch {
     return false
