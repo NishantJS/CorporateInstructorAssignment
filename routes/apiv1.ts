@@ -40,6 +40,7 @@ api.use("/text_file_to_audio", text2Speech);
 api.use("/merge_image_and_audio", createVideo);
 api.use("/merge_video_and_audio", replaceAudio);
 api.use("/merge_all_video", mergeVideo);
+api.use("/", download)
 
 
 export default api;
