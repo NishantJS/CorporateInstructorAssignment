@@ -9,7 +9,7 @@ import { join } from "path"
 import { pathToFileURL } from "url"
 const exec = util.promisify(execSync);
 
-const createVideo = Router();
+const replaceAudio = Router();
 
 const doesExists = async (path: string) => {
   try {
@@ -20,35 +20,35 @@ const doesExists = async (path: string) => {
   }
 }
 
-createVideo.post("/", async (req: UserType, res) => {
+replaceAudio.post("/", async (req: UserType, res) => {
   try {
-    const { image_file_path, audio_file_path } = req.body;
-    if (!image_file_path || !audio_file_path) throw new Error("Please provide path for both image and audio");
+    const { video_file_path, audio_file_path } = req.body;
+    if (!video_file_path || !audio_file_path) throw new Error("Please provide path for both image and audio");
 
     const user = req.user?.user!;
 
-    const { error: img_err, path: image, message: img_msg } = checkPath(image_file_path, user);
+    const { error: vid_err, path: video, message: vid_msg } = checkPath(video_file_path, user);
     const { error: wav_err, path: audio, message: wav_msg } = checkPath(audio_file_path, user);
 
-    if (img_err || !image) throw new Error(img_msg);
+    if (vid_err || !video) throw new Error(vid_msg);
     if (wav_err || !audio) throw new Error(wav_msg);
-    if (!await doesExists(image) || !await doesExists(audio)) throw new Error("File not found! 🚫")
+    if (!await doesExists(video) || !await doesExists(audio)) throw new Error("File not found! 🚫")
 
-    const filename = image + audio;
+    const filename = video + audio;
     const hash = createHash('md5').update(filename).digest('hex');
-    const video = join("public", user, `${hash}.mp4`)
-    const isSaved = await doesExists(video);
+    const newVideo = join("public", user, `${hash}.mp4`)
+    const isSaved = await doesExists(newVideo);
 
     if (!isSaved) {
-      const command = `ffmpeg -loop 1 -i ${image} -i ${audio} -c:v libx264 -tune stillimage -c:a aac -b:a 192k -pix_fmt yuv420p -shortest ${video}`
+      const command = `ffmpeg -i ${video} -i ${audio} -map 0:v -map 1:a -c:v copy ${newVideo}`
       await exec(command);
     }
 
-    const videoPath = pathToFileURL(video).pathname.split("server/").pop();
+    const videoPath = pathToFileURL(newVideo).pathname.split("server/").pop();
 
     return res.status(200).json({
       status: "ok",
-      message: "Video Created Successfully",
+      message: "Video and Audio Merged Successfully",
       video_file_path: videoPath
     })
 
@@ -63,4 +63,4 @@ createVideo.post("/", async (req: UserType, res) => {
   }
 })
 
-export default createVideo;
+export default replaceAudio;

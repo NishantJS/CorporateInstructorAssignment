@@ -33,7 +33,6 @@ text2Speech.post("/", async (req: UserType, res) => {
     });
 
   } catch (error) {
-    console.error(error)
     const options = {
       status: "error",
       message: error?.message
