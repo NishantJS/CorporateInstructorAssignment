@@ -3,43 +3,56 @@ import { UserType } from "../custom/definations";
 import util from "util"
 import { exec as execSync } from "child_process";
 import { checkPath } from "./checkPath";
+import { createHash } from "crypto"
+import { promises as Fs } from "fs"
+import { join } from "path"
+import { pathToFileURL } from "url"
 const exec = util.promisify(execSync);
 
 const createVideo = Router();
+
+const doesExists = async (path: string) => {
+  try {
+    await Fs.access(path)
+    return true
+  } catch {
+    return false
+  }
+}
 
 createVideo.post("/", async (req: UserType, res) => {
   try {
     const { image_file_path, audio_file_path } = req.body;
     if (!image_file_path || !audio_file_path) throw new Error("Please provide path for both image and audio");
 
-    const user = req.user?.user;
+    const user = req.user?.user!;
 
-    const { error: img_err, path: img_path, message: img_msg } = checkPath(image_file_path, user);
-    const { error: wav_err, path: wav_path, message: wav_msg } = checkPath(audio_file_path, user);
+    const { error: img_err, path: image, message: img_msg } = checkPath(image_file_path, user);
+    const { error: wav_err, path: audio, message: wav_msg } = checkPath(audio_file_path, user);
 
-    if (img_err) throw new Error(img_msg);
-    if (wav_err) throw new Error(wav_msg);
+    if (img_err || !image) throw new Error(img_msg);
+    if (wav_err || !audio) throw new Error(wav_msg);
 
-    const { rootPath, filename: image_filename, fileext } = img_path!;
-    const { filename: audio_filename } = wav_path!;
-    const filename = `${rootPath}${image_filename}`
+    const name = image + audio;
+    const hash = createHash('md5').update(name).digest('hex');
+    const video = join("public", user, `${hash}.mkv`)
+    const isSaved = await doesExists(video);
 
-    const audio = `${rootPath}${audio_filename}.wav`;
-    const image = `${filename}.${fileext}`;
-    const video = `${filename}.mkv`;
+    if (!isSaved) {
+      const command = `ffmpeg -loop 1 -f image2 -r 2 -i ${image} -i ${audio} -c:v libx264 -c:a copy -shortest ${video}`
+      await exec(command);
+    }
 
-    const command = `ffmpeg -loop 1 -f image2 -r 2 -i ${image} -i ${audio} -c:v libx264 -c:a copy -shortest ${video}`
-
-    await exec(command);
+    const videoPath = pathToFileURL(video).pathname.split("server").pop();
 
     return res.status(200).json({
       status: "ok",
       message: "Video Created Successfully",
-      video_file_path: video
+      video_file_path: videoPath
     })
 
   } catch (error) {
-    return res.status(500).json({ status: "error", message: error?.message })
+    return res.status(500).json({ status: "error", message: error?.message, error })
   }
 })
 
