@@ -44,7 +44,7 @@ replaceAudio.post("/", async (req: UserType, res) => {
       await exec(command);
     }
 
-    const videoPath = pathToFileURL(newVideo).pathname.split("server/").pop();
+    const videoPath = pathToFileURL(newVideo).pathname.split("CorporateTraining/").pop();
 
     return res.status(200).json({
       status: "ok",

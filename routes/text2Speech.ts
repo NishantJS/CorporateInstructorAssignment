@@ -18,11 +18,14 @@ text2Speech.post("/", async (req: UserType, res) => {
     if (error || !path) throw new Error(message);
 
     const options = { voice: "en+f2", speed: 80, wordGap: 1000, pitch: 100 }
-    const data = await readFile(path, 'utf8');
+
+    const textPath = pathToFileURL(path).pathname.split("CorporateTraining/").pop()!;
+
+    const data = await readFile(textPath, 'utf8');
     const out = await text2wav(data, options);
 
     const audio = format({ ...parse(path), base: '', ext: '.wav' })
-    const audioPath = pathToFileURL(audio).pathname.split("server/").pop()!;
+    const audioPath = pathToFileURL(audio).pathname.split("CorporateTraining/").pop()!;
 
     writeFile(audioPath, Buffer.from(out.buffer));
 

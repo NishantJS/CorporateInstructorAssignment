@@ -47,7 +47,7 @@ upload.post("/", saveFile.array("my_file", 3), async (req: UserType, res) => {
 
     for (let index = 0; index < length; index++) {
       const current = formData[index] as unknown as Express.Multer.File;
-      paths.push(pathToFileURL(current.path).href.split("/server/")[1])
+      paths.push(pathToFileURL(current.path).href.split("/CorporateTraining/")[1])
     }
 
     return res.status(200).json({

@@ -51,7 +51,7 @@ mergeVideo.post("/", async (req: UserType, res) => {
     await writeFile(`${newVideo}.txt`, file);
     const isSaved = await doesExists(newVideo);
 
-    const videoPath = pathToFileURL(newVideo).pathname.split("server/").pop();
+    const videoPath = pathToFileURL(newVideo).pathname.split("CorporateTraining/").pop();
 
     if (!isSaved) {
       const command = `ffmpeg -safe 0 -f concat -i ${videoPath}.txt -c copy ${videoPath}`

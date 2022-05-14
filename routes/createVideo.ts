@@ -44,7 +44,7 @@ createVideo.post("/", async (req: UserType, res) => {
       await exec(command);
     }
 
-    const videoPath = pathToFileURL(video).pathname.split("server/").pop();
+    const videoPath = pathToFileURL(video).pathname.split("CorporateTraining/").pop();
 
     return res.status(200).json({
       status: "ok",
