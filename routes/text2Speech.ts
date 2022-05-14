@@ -27,7 +27,7 @@ text2Speech.post("/", async (req: UserType, res) => {
     const audio = format({ ...parse(path), base: '', ext: '.wav' })
     const audioPath = pathToFileURL(audio).pathname.split("CorporateTraining/").pop()!;
 
-    writeFile(audioPath, Buffer.from(out.buffer));
+    await writeFile(audioPath, Buffer.from(out.buffer));
 
     return res.status(200).json({
       status: "ok",
