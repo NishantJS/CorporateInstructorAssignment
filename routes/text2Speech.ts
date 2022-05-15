@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { readFile, writeFile } from "fs/promises";
 import { parse, format } from "path";
-import text2wav from "text2wav"
+import { TextToSpeechClient } from "@google-cloud/text-to-speech"
 import { pathToFileURL } from "url";
 import { UserType } from "../custom/definations";
 import { checkPath } from "./checkPath";
@@ -10,24 +10,28 @@ const text2Speech = Router();
 
 text2Speech.post("/", async (req: UserType, res) => {
   try {
-
     const { file_path } = req.body;
     const user = req.user?.user;
 
     const { error, path, message } = checkPath(file_path, user, true);
     if (error || !path) throw new Error(message);
 
-    const options = { voice: "en+f2", speed: 80, wordGap: 1000, pitch: 100 }
-
     const textPath = pathToFileURL(path).pathname.split("CorporateTraining/").pop()!;
 
-    const data = await readFile(textPath, 'utf8');
-    const out = await text2wav(data, options);
+    const text = await readFile(textPath, 'utf8');
 
     const audio = format({ ...parse(path), base: '', ext: '.wav' })
     const audioPath = pathToFileURL(audio).pathname.split("CorporateTraining/").pop()!;
 
-    await writeFile(audioPath, Buffer.from(out.buffer));
+    const client = new TextToSpeechClient();
+    const request: any = {
+      input: { text },
+      voice: { languageCode: 'en-US', ssmlGender: "FEMALE" },
+      audioConfig: { audioEncoding: 'MP3' },
+    };
+
+    const [response] = await client.synthesizeSpeech(request);
+    await writeFile(audioPath, response.audioContent!, 'binary');
 
     return res.status(200).json({
       status: "ok",

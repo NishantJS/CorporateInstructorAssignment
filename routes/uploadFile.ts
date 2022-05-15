@@ -55,7 +55,6 @@ upload.post("/", saveFile.array("my_file", 3), async (req: UserType, res) => {
       "file_path": paths
     });
   } catch (error) {
-    console.error(error, "hello")
     return res.status(500).json({ status: "error", message: error?.message })
   }
 })
