@@ -14,7 +14,7 @@ Create Api which will do the following
 
 > for local check
 
-```bash
+```
 git clone https://github.com/NishantJS/CorporateInstructorAssignment.git
 
 npm install
@@ -38,7 +38,7 @@ https://github.com/googleapis/nodejs-text-to-speech#before-you-begin
 
 1. Create Storage Token
 
-```json
+```
    URL : http://intern.buddyshop.in/create_new_storage
    Method : POST
    Response Body (json)
@@ -51,7 +51,7 @@ https://github.com/googleapis/nodejs-text-to-speech#before-you-begin
 
 2. Upload File
 
-```json
+```
    URL : http://intern.buddyshop.in/upload_file
    Method : POST
    Request Body (form-data)
@@ -67,7 +67,7 @@ https://github.com/googleapis/nodejs-text-to-speech#before-you-begin
 
 3. Create Audio
 
-```json
+```
    URL : http://intern.buddyshop.in/text_file_to_audio
    Method : POST
    Request Body (json)
@@ -85,7 +85,7 @@ https://github.com/googleapis/nodejs-text-to-speech#before-you-begin
 
 4. Merge Image and Audio
 
-```json
+```
    URL : http://intern.buddyshop.in/merge_image_and_audio
    Method : POST
    Request Body (json)
@@ -107,7 +107,7 @@ https://github.com/googleapis/nodejs-text-to-speech#before-you-begin
 
 5. Merge Video and Audio
 
-```json
+```
    URL : http://intern.buddyshop.in/merge_video_and_audio
    Method : POST
    Request Body (json)
@@ -126,7 +126,7 @@ https://github.com/googleapis/nodejs-text-to-speech#before-you-begin
 
 6. Merge All Video
 
-```json
+```
    URL : http://intern.buddyshop.in/merge_all_video
    Method : POST
    Request Body (json)
@@ -153,7 +153,7 @@ according to the index of video files in 'video_file_path_list' . In Response bo
 
 7. Download File
 
-```json
+```
   URL : http://intern.buddyshop.in/download_file
   Method : GET
   Request Query (query-string)
@@ -170,7 +170,7 @@ if you file path is 'public/upload/5214c459-47d5-434f-8c25-cce3a5f47ff7.mp4' the
 
 8. List All Uploaded Files
 
-```json
+```
    URL : http://intern.buddyshop.in/my_upload_file
    Method : GET
    Response
