@@ -1,13 +1,11 @@
 import { Router } from "express";
 import { UserType } from "../custom/definations";
-import util from "util"
-import { exec as execSync } from "child_process";
+import { spawn } from "child_process";
 import { checkPath } from "./checkPath";
 import { createHash } from "crypto"
 import { access } from "fs/promises"
 import { join } from "path"
 import { pathToFileURL } from "url"
-const exec = util.promisify(execSync);
 
 const replaceAudio = Router();
 
@@ -40,8 +38,8 @@ replaceAudio.post("/", async (req: UserType, res) => {
     const isSaved = await doesExists(newVideo);
 
     if (!isSaved) {
-      const command = `ffmpeg -i ${video} -i ${audio} -map 0:v -map 1:a -c:v copy ${newVideo}`
-      await exec(command);
+      const commandFlags = ['-i', video, '-i', audio, '-map', '0:v', '-map', '1:a', '-c:v', 'copy', newVideo]
+      spawn("ffmpeg", commandFlags);
     }
 
     const videoPath = pathToFileURL(newVideo).pathname.split("CorporateTraining/").pop();

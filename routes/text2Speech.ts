@@ -20,7 +20,7 @@ text2Speech.post("/", async (req: UserType, res) => {
 
     const text = await readFile(textPath, 'utf8');
 
-    const audio = format({ ...parse(path), base: '', ext: '.wav' })
+    const audio = format({ ...parse(path), base: '', ext: '.mp3' })
     const audioPath = pathToFileURL(audio).pathname.split("CorporateTraining/").pop()!;
 
     const client = new TextToSpeechClient();

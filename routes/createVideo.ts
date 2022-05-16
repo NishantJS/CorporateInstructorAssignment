@@ -1,13 +1,11 @@
 import { Router } from "express";
 import { UserType } from "../custom/definations";
-import util from "util"
-import { exec as execSync } from "child_process";
+import { spawn } from "child_process";
 import { checkPath } from "./checkPath";
 import { createHash } from "crypto"
 import { access } from "fs/promises"
 import { join } from "path"
 import { pathToFileURL } from "url"
-const exec = util.promisify(execSync);
 
 const createVideo = Router();
 
@@ -40,8 +38,8 @@ createVideo.post("/", async (req: UserType, res) => {
     const isSaved = await doesExists(video);
 
     if (!isSaved) {
-      const command = `ffmpeg -loop 1 -i ${image} -i ${audio} -c:v libx264 -tune stillimage -c:a aac -b:a 192k -pix_fmt yuv420p -shortest ${video}`
-      await exec(command);
+      const command = ['-loop', '1', '-i', image, '-i', audio, '-c:v', 'libx264', '-tune', 'stillimage', '-c:a', 'aac', '-b:a', '192k', '-pix_fmt', 'yuv420p', '-shortest', video]
+      spawn("ffmpeg", command);
     }
 
     const videoPath = pathToFileURL(video).pathname.split("CorporateTraining/").pop();

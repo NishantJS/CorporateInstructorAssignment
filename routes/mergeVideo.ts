@@ -1,13 +1,11 @@
 import { Router } from "express";
 import { UserType } from "../custom/definations";
-import util from "util"
-import { exec as execSync } from "child_process";
+import { spawn } from "child_process";
 import { checkPath } from "./checkPath";
 import { createHash } from "crypto"
 import { writeFile, access } from "fs/promises"
 import { pathToFileURL } from "url"
 import { join, parse } from "path";
-const exec = util.promisify(execSync);
 
 const mergeVideo = Router();
 
@@ -51,14 +49,13 @@ mergeVideo.post("/", async (req: UserType, res) => {
     await writeFile(`${newVideo}.txt`, file);
     const isSaved = await doesExists(newVideo);
 
-    const videoPath = pathToFileURL(newVideo).pathname.split("CorporateTraining/").pop();
+    const videoPath = pathToFileURL(newVideo).pathname.split("CorporateTraining/").pop() || "tmp/delete";
 
     if (!isSaved) {
-      const command = `ffmpeg -safe 0 -f concat -i ${videoPath}.txt -c copy ${videoPath}`
+      const commandFlags = ['-safe', '0', '-f', 'concat', '-i', `${videoPath}.txt`, '-c', 'copy', videoPath]
 
-      await exec(command);
+      spawn("ffmpeg", commandFlags);
     }
-
 
     return res.status(200).json({
       status: "ok",
